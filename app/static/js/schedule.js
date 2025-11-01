@@ -2,9 +2,10 @@ import { WEEKDAYS } from './constants.js';
 import { savedName } from './name.js';
 import { renderCheckboxes } from './weekdays.js';
 import { fetchSchedule, resetSchedule } from './apis.js';
-import { getPeopleForDay } from './utils.js';
+import { getNextWeekRangeFromToday, getPeopleForDay } from './utils.js';
 import { $workdayContainer, $laundryContainer } from './domElements.js';
 
+const $weekRangeContainer = document.querySelector('#week-range-container');
 const $scheduleContainer = document.querySelector('#schedule-container');
 const $numberWorkContainer = document.querySelector('#work-number-container');
 const $resetScheduleButton = document.querySelector('#reset-schedule-button');
@@ -24,6 +25,12 @@ const syncSelectedDaysFromData = (scheduleData) => {
   data.work.forEach((day) => selectedWorkDays.add(day));
   data.laundry.forEach((day) => selectedLaundryDays.add(day));
 };
+
+/** 이번주 근무 기간 렌더링 */
+const [start, end] = getNextWeekRangeFromToday();
+$weekRangeContainer.innerText = `${
+  start.getMonth() + 1
+}월 ${start.getDate()}일부터 ${end.getMonth() + 1}월 ${end.getDate()}일까지🗓`;
 
 /** 근무 스케줄 렌더링 */
 export const renderSchedule = async (scheduleData) => {

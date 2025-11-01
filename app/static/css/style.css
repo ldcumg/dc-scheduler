@@ -1,0 +1,27 @@
+:root {
+  --color-primary: #42A89D
+}
+
+/* html {
+  font-size: clamp(24px, 1.2vw + 0.5vh, 36px);
+} */
+
+body {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+h2 {
+  margin-bottom: 0.5rem;
+}
+
+#day-form>div {
+  display: flex;
+  gap: 1rem;
+}
+
+
+
+#schedule-display-section {
+  margin-top: 2rem;
+}

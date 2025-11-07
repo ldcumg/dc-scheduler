@@ -3,7 +3,7 @@ import { STAFF_NAME } from './constants.js';
 
 const $nameButton = document.querySelector('#name-button');
 
-export const lsSavedName = localStorage.getItem(STAFF_NAME);
+export const getSavedName = () => localStorage.getItem(STAFF_NAME);
 
 export const setEditingState = (isEditing) => {
   $nameInput.disabled = !isEditing;
@@ -12,8 +12,9 @@ export const setEditingState = (isEditing) => {
 };
 
 export const loadLsSavedName = () => {
-  if (lsSavedName) {
-    $nameInput.value = lsSavedName;
+  const savedName = getSavedName();
+  if (savedName) {
+    $nameInput.value = savedName;
     setEditingState(false);
   } else {
     setEditingState(true);

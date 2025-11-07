@@ -1,5 +1,5 @@
 import { WEEKDAYS } from './constants.js';
-import { lsSavedName } from './name.js';
+import { getSavedName } from './name.js';
 import { getPeopleForDay } from './utils.js';
 import { renderCheckboxes } from './dom/events.js';
 import { addWorkDay, addLaundryDay } from './store.js';
@@ -9,14 +9,15 @@ const $numberWorkContainer = document.querySelector('#work-number-container');
 
 /** 선택된 날들을 스케줄 데이터에서 동기화 */
 export const syncSelectedDaysFromData = (scheduleData) => {
-  if (!scheduleData || !scheduleData[lsSavedName]) {
-    return;
+  const savedName = getSavedName();
+  const userData = scheduleData?.[savedName];
+
+  if (userData) {
+    const { work, laundry } = userData;
+
+    work?.forEach((day) => addWorkDay(day));
+    laundry?.forEach((day) => addLaundryDay(day));
   }
-
-  const { work, laundry } = scheduleData[lsSavedName];
-
-  work?.forEach((day) => addWorkDay(day));
-  laundry?.forEach((day) => addLaundryDay(day));
 
   renderCheckboxes();
 };

@@ -41,7 +41,8 @@ section {
   padding: 32px;
 }
 
-button {
+button,
+.button {
   width: 72px;
   padding: 8px 16px;
   border: none;

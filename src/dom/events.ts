@@ -97,11 +97,15 @@ export const handleSubmitEvent = () => {
 };
 
 /** 이번주 근무 기간 렌더링 */
-const [start, end] = getNextWeekRangeFromToday();
-if ($weekRangeContainer instanceof HTMLDivElement)
-  $weekRangeContainer.innerText = `${
-    start.getMonth() + 1
-  }월 ${start.getDate()}일부터 ${end.getMonth() + 1}월 ${end.getDate()}일까지🗓`;
+export const renderWeekRange = () => {
+  const [start, end] = getNextWeekRangeFromToday();
+  if ($weekRangeContainer instanceof HTMLDivElement)
+    $weekRangeContainer.innerText = `${
+      start.getMonth() + 1
+    }월 ${start.getDate()}일부터 ${
+      end.getMonth() + 1
+    }월 ${end.getDate()}일까지🗓`;
+};
 
 /** 근무표 초기화 버튼 이벤트 */
 export const resetScheduleEvent = () => {

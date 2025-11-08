@@ -7,6 +7,7 @@ import {
   handleSubmitEvent,
   resetScheduleEvent,
   copyScheduleEvent,
+  renderWeekRange,
 } from './dom/events';
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -26,5 +27,6 @@ window.addEventListener('DOMContentLoaded', () => {
   setNameEvent();
   handleSubmitEvent();
   resetScheduleEvent();
+  renderWeekRange();
   copyScheduleEvent();
 });

@@ -84,7 +84,7 @@ export const renderCheckboxes = () => {
 };
 
 export const handleSubmitEvent = () => {
-  if ($submitScheduleButton instanceof HTMLButtonElement)
+  if ($submitScheduleButton instanceof HTMLInputElement)
     $submitScheduleButton.addEventListener('click', async () => {
       if ($nameInput instanceof HTMLInputElement) {
         if (!$nameInput.value) return alert('이름을 입력해주세요');
@@ -109,7 +109,7 @@ export const renderWeekRange = () => {
 
 /** 근무표 초기화 버튼 이벤트 */
 export const resetScheduleEvent = () => {
-  if ($resetScheduleButton instanceof HTMLButtonElement)
+  if ($resetScheduleButton instanceof HTMLInputElement)
     $resetScheduleButton.addEventListener('click', async () => {
       if (!confirm('근무표를 초기화하시겠습니까?')) return;
 
@@ -136,7 +136,7 @@ export const resetScheduleEvent = () => {
 
 /** 복사 버튼 이벤트 */
 export const copyScheduleEvent = () => {
-  if ($copyButton instanceof HTMLButtonElement)
+  if ($copyButton instanceof HTMLInputElement)
     $copyButton.addEventListener('click', () => {
       if ($scheduleDisplayContainer instanceof HTMLDivElement) {
         let textToCopy = $scheduleDisplayContainer.innerText;

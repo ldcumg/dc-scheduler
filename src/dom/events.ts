@@ -100,11 +100,11 @@ export const handleSubmitEvent = () => {
 export const renderWeekRange = () => {
   const [start, end] = getNextWeekRangeFromToday();
   if ($weekRangeContainer instanceof HTMLDivElement)
-    $weekRangeContainer.innerText = `${
+    $weekRangeContainer.textContent = `${
       start.getMonth() + 1
     }월 ${start.getDate()}일부터 ${
       end.getMonth() + 1
-    }월 ${end.getDate()}일까지🗓`;
+    }월 ${end.getDate()}일까지 🗓`;
 };
 
 /** 근무표 초기화 버튼 이벤트 */
@@ -145,10 +145,10 @@ export const copyScheduleEvent = () => {
         navigator.clipboard
           .writeText(textToCopy)
           .then(() => {
-            $copyButton.innerText = '복사됨';
+            $copyButton.value = '복사됨';
 
             setTimeout(() => {
-              $copyButton.innerText = '복사';
+              $copyButton.value = '복사';
             }, 500);
           })
           .catch((err) => {

@@ -3,7 +3,7 @@ type ButtonData = {
   onClick: () => void;
 };
 
-const createModal = (buttonData: ButtonData[]) => {
+export const createModal = (buttonData: ButtonData[]) => {
   // 모달 루트
   const modalRoot = document.createElement('div');
   modalRoot.className = 'modal-portal';
@@ -35,7 +35,7 @@ const createModal = (buttonData: ButtonData[]) => {
 
   modalContent.append(closeBtn, buttonContainer);
   modalRoot.appendChild(modalContent);
+  document.body.appendChild(modalRoot);
 
-  // 닫기 버튼
   return { close };
 };

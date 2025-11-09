@@ -26,6 +26,7 @@ export const syncSelectedDaysFromData = (scheduleData: ScheduleData) => {
 
 /** 근무 스케줄 렌더링 */
 export const renderSchedule = async (scheduleData: ScheduleData) => {
+  console.log('[ ㏒ ] scheduleData =>', scheduleData);
   if ($scheduleContainer instanceof HTMLDivElement)
     $scheduleContainer.innerText = WEEKDAYS.map((day) => {
       const work = getPeopleForDay(scheduleData, 'work', day);
@@ -40,6 +41,7 @@ export const renderSchedule = async (scheduleData: ScheduleData) => {
     (numberOfWorkData[workDays] ??= new Set()).add(name);
   }
 
+  console.log('[ ㏒ ] numberOfWorkData =>', numberOfWorkData);
   if ($numberWorkContainer instanceof HTMLDivElement)
     $numberWorkContainer.innerText = Object.keys(numberOfWorkData)
       .sort((a, b) => Number(b) - Number(a))

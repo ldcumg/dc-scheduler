@@ -16,6 +16,8 @@
 
 <body>
   <h1>동문 취향 근무표</h1>
+  <input type="button" id="test-button" value="test" />
+
   <section id="submit-section">
     <form id="name-form">
       <label for="name-input">이름</label>
@@ -35,7 +37,7 @@
       </form>
 
       <div id="submit-button-container">
-        <input type="button" class="button" id="submit-button" value="제출" />
+        <input type="button" id="submit-button" value="제출" />
       </div>
     </div>
   </section>
@@ -43,7 +45,7 @@
   <section id="schedule-display-section">
     <header>
       <h2>근무표</h2>
-      <input type="button" class="button" id="reset-schedule-button" value="초기화" />
+      <input type="button" id="reset-schedule-button" value="초기화" />
     </header>
 
     <div id="schedule-display-container">
@@ -54,6 +56,9 @@
         <br />
         <h3>이번주 근무 일수 ✅</h3>
         <div id="work-number-container"></div>
+        <br />
+        <h3>누적 근무 일수 🏆</h3>
+        <div id="cumulation-container"></div>
       </div>
       <input type="button" class="button" id="copy-button" value="복사" />
     </div>

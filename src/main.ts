@@ -1,6 +1,6 @@
 import { onValue, DataSnapshot } from 'firebase/database';
 import { scheduleRef } from './firebase';
-import { loadLsSavedName } from './name';
+import { loadLsSavedName } from './features/name';
 import { syncSelectedDaysFromData, renderSchedule } from './schedule';
 import {
   setNameEvent,

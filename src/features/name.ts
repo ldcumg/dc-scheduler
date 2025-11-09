@@ -1,5 +1,5 @@
-import { $nameInput } from './dom/elements';
-import { STAFF_NAME } from './constants';
+import { $nameInput } from '../dom/elements';
+import { STAFF_NAME } from '../constants';
 
 const $nameButton = document.querySelector('#name-button');
 

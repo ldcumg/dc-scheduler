@@ -1,4 +1,4 @@
-import type { Weekday } from './type';
+import type { Weekday } from './types';
 
 const _selectedWorkDays = new Set<Weekday>();
 const _selectedLaundryDays = new Set<Weekday>();

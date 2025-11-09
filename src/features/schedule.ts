@@ -1,9 +1,9 @@
-import { WEEKDAYS } from './constants';
+import { WEEKDAYS } from '../constants';
 import { getSavedName } from './name';
-import { getPeopleForDay } from './utils';
-import { renderCheckboxes } from './dom/events';
-import { addWorkDay, addLaundryDay } from './store';
-import type { ScheduleData } from './type';
+import { getPeopleForDay } from '../utils';
+import { renderCheckboxes } from '../dom/events';
+import { addWorkDay, addLaundryDay } from '../store';
+import type { ScheduleData } from '../types';
 
 const $scheduleContainer = document.querySelector('#schedule-container');
 const $numberWorkContainer = document.querySelector('#work-number-container');

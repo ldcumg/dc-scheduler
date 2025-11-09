@@ -1,7 +1,7 @@
 import { WEEKDAYS } from '../constants';
 import { $nameInput, $workdayContainer, $laundryContainer } from './elements';
 import { createCheckbox } from '../weekdays';
-import { setEditingState, saveLsName } from '../name';
+import { setEditingState, saveLsName } from '../features/name';
 import { submitSelectedDays, resetSchedule } from '../api';
 import { getNextWeekRangeFromToday } from '../utils';
 import {

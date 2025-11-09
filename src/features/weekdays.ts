@@ -1,4 +1,4 @@
-import type { SelectedDaysValue, Weekday } from './type';
+import type { SelectedDaysValue, Weekday } from '../types';
 
 export const createCheckbox = (
   day: Weekday,

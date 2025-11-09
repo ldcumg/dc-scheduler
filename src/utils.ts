@@ -1,4 +1,4 @@
-import type { ScheduleData, SelectedDaysKey, Weekday } from './type';
+import type { ScheduleData, SelectedDaysKey, Weekday } from './types';
 
 export function getNextWeekRangeFromToday() {
   const today = new Date();

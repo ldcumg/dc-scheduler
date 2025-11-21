@@ -44,7 +44,9 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
   if (savedName) {
-    selectSection.appendChild(createApplyWorkContainer(savedName));
+    createApplyWorkContainer(savedName).then((el) =>
+      selectSection.appendChild(el)
+    );
   } else {
     createStaffSelectContainer().then((el) => selectSection.appendChild(el));
   }

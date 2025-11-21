@@ -16,7 +16,7 @@
 }
 
 html {
-  font-family: var(--font-main);
+  font-family: 'Pretendard', sans-serif;
 }
 
 body {
@@ -32,9 +32,7 @@ body {
 }
 
 button,
-input,
-select,
-textarea {
+input {
   font-family: inherit;
 }
 
@@ -57,20 +55,23 @@ section {
   padding: 32px;
 }
 
-button,
+input {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+
+}
+
 input[type="button"],
 input[type="submit"],
-input[type="checkbox"] {
+input[type="checkbox"],
+.checkbox-label {
   cursor: pointer;
 }
 
-button,
 input[type="button"],
 input[type="submit"] {
   width: 72px;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
   background-color: var(--color-accent);
   color: white;
 }
@@ -81,10 +82,11 @@ footer {
   margin-right: 8px;
 }
 
-.checkbox-label {
-  cursor: pointer;
+.staff-button {
+  width: 100px !important;
+  height: 48px;
+  font-size: 20px;
 }
-
 
 .edit {
   animation: shake 0.25s ease-in-out infinite;
@@ -98,13 +100,43 @@ footer {
 
 #select-section {
   background-color: var(--color-secondary);
+  padding: 20px 0;
+}
+
+#staff-select-container,
+#apply-work-container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-#apply-work-container {
+#staff-select-container {
+  gap: 24px;
+}
+
+#control-container {
   width: 100%;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+#name-form {
+  margin-left: 20px;
+}
+
+#name-input {
+  width: 120px;
+  margin-right: 4px;
+}
+
+#svg-container {
+  margin-left: auto;
+  margin-right: 20px;
+  display: flex;
+  gap: 8px;
 }
 
 #name-container {
@@ -119,13 +151,20 @@ footer {
   padding: 0 32px;
 }
 
+#staff-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+
 #day-form label {
   display: flex;
   flex-direction: row;
 }
 
 #submit-button-container {
-  text-align: right;
+  justify-content: flex-end;
   margin-top: 24px;
 }
 

@@ -1,5 +1,5 @@
-import { WEEKDAYS } from '../constants';
-import { getSelectedLaundryDays, getSelectedWorkDays } from '../store';
+import { SelectedDaysKey, WEEKDAYS } from '../constants';
+import { getSelectedDays } from '../store';
 import { getPeopleForDay, getSmartWeekRange } from '../utils';
 import type { ScheduleData } from '../types';
 import { createCheckbox } from './elements';
@@ -29,8 +29,8 @@ export const renderCheckboxes = (
   const laundryFrag = document.createDocumentFragment();
 
   WEEKDAYS.forEach((day) => {
-    const selectedWorkDays = getSelectedWorkDays();
-    const selectedLaundryDays = getSelectedLaundryDays();
+    const selectedWorkDays = getSelectedDays(SelectedDaysKey.WORK);
+    const selectedLaundryDays = getSelectedDays(SelectedDaysKey.LAUNDRY);
 
     const { label: workLabel, checkbox: workCheckbox } = createCheckbox(
       day,

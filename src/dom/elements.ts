@@ -1,16 +1,21 @@
+import { get } from 'firebase/database';
 import { fetchStaffs } from '../api';
 import { SVG_ICON_PATH } from '../constants';
+import { syncSelectedDays } from '../feature/schedule';
 import type { SelectedDaysValue, Weekday } from '../types';
 import { createSvgIcon, renderCheckboxes } from './render';
+import { scheduleRef } from '../firebase';
 
 export const createStaffSelectContainer = async () => {
   const staffSelectContainer = document.createElement('div');
   staffSelectContainer.id = 'staff-select-container';
 
-  const nameFormContainer = document.createElement('div');
-  nameFormContainer.id = 'name-form-container';
   const controlContainer = document.createElement('div');
   controlContainer.id = 'control-container';
+
+  const svgContainer = document.createElement('div');
+  svgContainer.id = 'svg-container';
+
   const staffContainer = document.createElement('div');
   staffContainer.id = 'staff-container';
 
@@ -32,7 +37,6 @@ export const createStaffSelectContainer = async () => {
   nameButton.value = '완료';
 
   nameForm.appendChild(nameButton);
-  nameFormContainer.appendChild(nameForm);
 
   Promise.allSettled([
     createSvgIcon(SVG_ICON_PATH.plus),
@@ -41,10 +45,12 @@ export const createStaffSelectContainer = async () => {
   ]).then((results) => {
     results.forEach((result) => {
       if (result.status === 'fulfilled' && result.value) {
-        controlContainer.appendChild(result.value);
+        svgContainer.appendChild(result.value);
       }
     });
   });
+  controlContainer.appendChild(nameForm);
+  controlContainer.appendChild(svgContainer);
 
   const staffs = await fetchStaffs();
   staffs.forEach(({ name }) => {
@@ -56,14 +62,13 @@ export const createStaffSelectContainer = async () => {
     staffContainer.appendChild(staffButton);
   });
 
-  staffSelectContainer.appendChild(nameFormContainer);
   staffSelectContainer.appendChild(controlContainer);
   staffSelectContainer.appendChild(staffContainer);
 
   return staffSelectContainer;
 };
 
-export const createApplyWorkContainer = (staffName: string) => {
+export const createApplyWorkContainer = async (staffName: string) => {
   const applyWorkContainer = document.createElement('div');
   applyWorkContainer.id = 'apply-work-container';
 
@@ -100,6 +105,10 @@ export const createApplyWorkContainer = (staffName: string) => {
 
   const laundryContainer = document.createElement('div');
   laundryContainer.id = 'laundry-container';
+
+  const scheduleSnapshot = await get(scheduleRef());
+
+  syncSelectedDays(staffName, scheduleSnapshot.val());
   renderCheckboxes(workDayContainer, laundryContainer);
 
   dayForm.appendChild(workTitle);

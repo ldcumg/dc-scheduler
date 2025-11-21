@@ -5,18 +5,14 @@ import {
   isWeekday,
   toggleStaffButtonClass,
 } from '../utils';
-import {
-  addLaundryDay,
-  addWorkDay,
-  removeLaundryDay,
-  removeWorkDay,
-} from '../store';
+import { selectDay, deselectDay } from '../store';
 import { clearSavedName, saveName } from '../feature/name';
 import { attachNewbie, editStaff, removeStaffByName } from '../feature/staff';
 import {
   createApplyWorkContainer,
   createStaffSelectContainer,
 } from './elements';
+import { SelectedDaysKey } from '../constants';
 
 export const delegateStaffEvents = (parentNode: HTMLElement) => {
   let editMode = false;
@@ -29,9 +25,8 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
 
     const staffButtons =
       parentNode.querySelectorAll<HTMLInputElement>('.staff-button');
-    const svgs = parentNode.querySelectorAll<SVGSVGElement>(
-      '#control-container svg'
-    );
+    const svgs =
+      parentNode.querySelectorAll<SVGSVGElement>('#svg-container svg');
 
     // SVG 클릭 처리
     svgs.forEach(async (svg, index) => {
@@ -54,6 +49,8 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
           editMode = !editMode;
           clearStaffButtonClasses(staffButtons, 'delete');
           toggleStaffButtonClass(staffButtons, 'edit', editMode);
+          const nameForm = getElement('#name-form', HTMLFormElement);
+          if (!nameForm.hidden) nameForm.hidden = true;
           break;
         case 2: // 삭제
           editMode = false;
@@ -75,7 +72,6 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
         nameForm.hidden = false;
         nameInput.focus();
         editingTarget = target;
-        editMode = false;
         return;
       }
 
@@ -89,7 +85,9 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
       }
 
       saveName(target.value);
-      parentNode.replaceChildren(createApplyWorkContainer(target.value));
+      createApplyWorkContainer(target.value).then((el) =>
+        parentNode.replaceChildren(el)
+      );
     }
   });
 
@@ -146,19 +144,19 @@ export const delegateSubmitEvents = (parentNode: HTMLElement) => {
       );
       if (!laundryCheckbox) return;
 
-      if (target.checked) addWorkDay(day);
-      else removeWorkDay(day);
+      if (target.checked) selectDay(SelectedDaysKey.WORK, day);
+      else deselectDay(SelectedDaysKey.WORK, day);
 
       laundryCheckbox.disabled = !target.checked;
       if (!target.checked) {
         laundryCheckbox.checked = false;
-        removeLaundryDay(day);
+        deselectDay(SelectedDaysKey.LAUNDRY, day);
       }
     }
 
     if (role === 'laundry') {
-      if (target.checked) addLaundryDay(day);
-      else removeLaundryDay(day);
+      if (target.checked) selectDay(SelectedDaysKey.LAUNDRY, day);
+      else deselectDay(SelectedDaysKey.LAUNDRY, day);
     }
   });
 

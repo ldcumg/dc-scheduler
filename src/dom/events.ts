@@ -19,6 +19,8 @@ import {
 } from './elements';
 import { SelectedDaysKey } from '../constants';
 import { renderTotalWorkDays } from './render';
+import { get, remove, set } from 'firebase/database';
+import { scheduleRef } from '../firebase';
 
 export const delegateStaffEvents = (parentNode: HTMLElement) => {
   let editMode: boolean = false;
@@ -41,7 +43,8 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
 
       switch (index) {
         case 0: // 추가
-          deleteMode = editMode = false;
+          editMode = deleteMode = false;
+          nameForm.hidden || (nameForm.hidden = true);
           clearStaffButtonClasses(staffButtons, 'edit', 'delete');
           if (confirm('신입을 추가하시겠습니까?')) {
             const staffContainer = getElement(
@@ -52,17 +55,19 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
           }
           break;
         case 1: // 편집
-          deleteMode = false;
           editMode = !editMode;
           clearStaffButtonClasses(staffButtons, 'delete', 'editing');
           toggleStaffButtonClass(staffButtons, 'edit', editMode);
+          deleteMode && (deleteMode = false);
+          editingTarget && (editingTarget = null);
           nameForm.hidden || (nameForm.hidden = true);
           break;
         case 2: // 삭제
-          editMode = false;
           deleteMode = !deleteMode;
           clearStaffButtonClasses(staffButtons, 'edit', 'editing');
           toggleStaffButtonClass(staffButtons, 'delete', deleteMode);
+          editMode && (editMode = false);
+          editingTarget && (editingTarget = null);
           nameForm.hidden || (nameForm.hidden = true);
           break;
       }
@@ -73,7 +78,8 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
       target instanceof HTMLButtonElement &&
       target.classList.contains('staff-button')
     ) {
-      const docId = target.dataset.docId!;
+      const docId = target.dataset.docId;
+      if (!docId) return;
 
       if (editMode) {
         const nameForm = getElement('#name-form', HTMLFormElement);
@@ -88,6 +94,10 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
       if (deleteMode) {
         if (confirm(`${target.textContent}을(를) 삭제하시겠습니까?`)) {
           await removeStaffByName(docId);
+          const targetRef = scheduleRef(target.textContent);
+          get(targetRef).then((snapshot) => {
+            snapshot.exists() && remove(targetRef);
+          });
           target.remove();
           deleteMode = false;
           clearStaffButtonClasses(staffButtons, 'delete');
@@ -107,13 +117,22 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
     if (!(form instanceof HTMLFormElement) || form.id !== 'name-form') return;
 
     e.preventDefault();
-    if (!editingTarget) return;
+    if (!editingTarget || !editingTarget.dataset.docId) return;
 
     const nameInput = getElement('#name-input', HTMLInputElement);
     const newName = nameInput.value.trim();
     if (!newName) return;
 
-    await editStaff(editingTarget.dataset.docId!, newName);
+    await editStaff(editingTarget.dataset.docId, newName);
+    const targetRef = scheduleRef(editingTarget.textContent);
+    get(targetRef)
+      .then((snapshot) => {
+        snapshot.exists() && set(scheduleRef(newName), snapshot.val());
+        return snapshot;
+      })
+      .then((snapshot) => {
+        snapshot.exists() && remove(targetRef);
+      });
     editingTarget.textContent = newName;
     nameInput.value = '';
     editingTarget.classList.remove('editing');
@@ -184,9 +203,9 @@ export const delegateSubmitEvents = (parentNode: HTMLElement) => {
     e.preventDefault();
 
     const name = getElement('#name', HTMLSpanElement);
-    if (!name.textContent) return alert('스탭을 선택해주세요');
+    if (!name.dataset.docId) return;
 
-    await submitSelectedDays(name.textContent, name.dataset.docId!);
+    await submitSelectedDays(name.textContent, name.dataset.docId);
 
     const cumulationContainer = getElement(
       '#cumulation-container',

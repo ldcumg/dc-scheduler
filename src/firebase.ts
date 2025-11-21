@@ -23,6 +23,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+export const db = getFirestore(app);
 const staffConverter = {
   toFirestore: (staff: Staff) => staff,
   fromFirestore: (snap: QueryDocumentSnapshot): Staff => {
@@ -33,8 +34,6 @@ const staffConverter = {
     return data as Staff;
   },
 };
-
-export const db = getFirestore(app);
 export const staffCollection: CollectionReference<Staff> = collection(
   db,
   Firebase.STAFF

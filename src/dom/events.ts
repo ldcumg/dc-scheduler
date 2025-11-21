@@ -1,11 +1,11 @@
-import { resetSchedule, submitSelectedDays } from '../api';
+import { fetchStaffs, resetSchedule, submitSelectedDays } from '../api';
 import {
   clearStaffButtonClasses,
   getElement,
   isWeekday,
   toggleStaffButtonClass,
 } from '../utils';
-import { selectDay, deselectDay } from '../store';
+import { selectDay, deselectDay, clearSelectedDays } from '../store';
 import { clearSavedName, saveName } from '../feature/name';
 import { attachNewbie, editStaff, removeStaffByName } from '../feature/staff';
 import {
@@ -17,7 +17,7 @@ import { SelectedDaysKey } from '../constants';
 export const delegateStaffEvents = (parentNode: HTMLElement) => {
   let editMode = false;
   let deleteMode = false;
-  let editingTarget: HTMLInputElement | null = null;
+  let editingTarget: HTMLButtonElement | null = null;
 
   parentNode.addEventListener('click', async (e) => {
     const target = e.target;
@@ -63,7 +63,7 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
 
     // staff-button 클릭 처리
     if (
-      target instanceof HTMLInputElement &&
+      target instanceof HTMLButtonElement &&
       target.classList.contains('staff-button')
     ) {
       if (editMode) {
@@ -76,16 +76,16 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
       }
 
       if (deleteMode) {
-        if (confirm(`${target.value}을(를) 삭제하시겠습니까?`)) {
-          await removeStaffByName(target.value, target);
+        if (confirm(`${target.textContent}을(를) 삭제하시겠습니까?`)) {
+          await removeStaffByName(target.textContent, target);
           deleteMode = false;
           clearStaffButtonClasses(staffButtons, 'delete');
         }
         return;
       }
 
-      saveName(target.value);
-      createApplyWorkContainer(target.value).then((el) =>
+      saveName(target.textContent);
+      createApplyWorkContainer(target.textContent).then((el) =>
         parentNode.replaceChildren(el)
       );
     }
@@ -103,7 +103,7 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
     const newName = nameInput.value.trim();
     if (!newName) return;
 
-    await editStaff(editingTarget.value, newName, editingTarget);
+    await editStaff(editingTarget.textContent, newName, editingTarget);
     nameInput.value = '';
     editingTarget = null;
     target.hidden = true;
@@ -123,8 +123,11 @@ export const delegateSubmitEvents = (parentNode: HTMLElement) => {
       target.id === 'staff-change-button'
     ) {
       clearSavedName();
-      const staffSelectContainer = await createStaffSelectContainer();
-      parentNode.replaceChildren(staffSelectContainer);
+      clearSelectedDays();
+      const staffs = await fetchStaffs();
+      createStaffSelectContainer(staffs).then((el) =>
+        parentNode.replaceChildren(el)
+      );
     }
   });
 

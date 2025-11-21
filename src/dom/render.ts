@@ -1,7 +1,7 @@
 import { SelectedDaysKey, WEEKDAYS } from '../constants';
 import { getSelectedDays } from '../store';
-import { getPeopleForDay, getSmartWeekRange } from '../utils';
-import type { ScheduleData } from '../types';
+import { getElement, getPeopleForDay, getSmartWeekRange } from '../utils';
+import type { ScheduleData, Staff } from '../types';
 import { createCheckbox } from './elements';
 
 export const createSvgIcon = async (path: string) => {
@@ -21,10 +21,10 @@ export const createSvgIcon = async (path: string) => {
   return svg;
 };
 
-export const renderCheckboxes = (
-  workDayContainer: HTMLDivElement,
-  laundryContainer: HTMLDivElement
-) => {
+export const renderCheckboxes = () => {
+  const workDayContainer = getElement('#workday-container', HTMLDivElement);
+  const laundryContainer = getElement('#laundry-container', HTMLDivElement);
+
   const workFrag = document.createDocumentFragment();
   const laundryFrag = document.createDocumentFragment();
 
@@ -90,5 +90,25 @@ export const renderSchedule = async (
   numberWorkContainer.innerText = Object.keys(numberOfWorkData)
     .sort((a, b) => Number(b) - Number(a))
     .map((days) => `${[...numberOfWorkData[days]].join(' ')} ${days}일`)
+    .join('\n');
+};
+
+/** 누적 근무일수 렌더링 */
+export const renderTotalWorkDays = (
+  cumulationContainer: HTMLDivElement,
+  staffs: Staff[]
+) => {
+  const totals = staffs
+    .map((staff) => ({
+      name: staff.name,
+      totalWorkDays: Object.values(staff.workDays).reduce(
+        (sum, v) => sum + v,
+        0
+      ),
+    }))
+    .sort((a, b) => b.totalWorkDays - a.totalWorkDays);
+
+  cumulationContainer.innerText = totals
+    .map(({ name, totalWorkDays }) => `${name} ${totalWorkDays}일`)
     .join('\n');
 };

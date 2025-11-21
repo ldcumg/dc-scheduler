@@ -1,12 +1,11 @@
 import { get } from 'firebase/database';
-import { fetchStaffs } from '../api';
 import { SVG_ICON_PATH } from '../constants';
 import { syncSelectedDays } from '../feature/schedule';
-import type { SelectedDaysValue, Weekday } from '../types';
+import type { SelectedDaysValue, Staff, Weekday } from '../types';
 import { createSvgIcon, renderCheckboxes } from './render';
 import { scheduleRef } from '../firebase';
 
-export const createStaffSelectContainer = async () => {
+export const createStaffSelectContainer = async (staffs: Staff[]) => {
   const staffSelectContainer = document.createElement('div');
   staffSelectContainer.id = 'staff-select-container';
 
@@ -52,13 +51,12 @@ export const createStaffSelectContainer = async () => {
   controlContainer.appendChild(nameForm);
   controlContainer.appendChild(svgContainer);
 
-  const staffs = await fetchStaffs();
   staffs.forEach(({ name }) => {
-    const staffButton = document.createElement('input');
+    const staffButton = document.createElement('button');
     staffButton.type = 'button';
     staffButton.className = 'staff-button';
     staffButton.id = name;
-    staffButton.value = name;
+    staffButton.textContent = name;
     staffContainer.appendChild(staffButton);
   });
 
@@ -109,7 +107,7 @@ export const createApplyWorkContainer = async (staffName: string) => {
   const scheduleSnapshot = await get(scheduleRef());
 
   syncSelectedDays(staffName, scheduleSnapshot.val());
-  renderCheckboxes(workDayContainer, laundryContainer);
+  renderCheckboxes();
 
   dayForm.appendChild(workTitle);
   dayForm.appendChild(workDayContainer);

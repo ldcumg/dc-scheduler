@@ -3,10 +3,23 @@ import type { ScheduleData, SelectedDaysKey, Weekday } from './types';
 
 export function createEl<K extends keyof HTMLElementTagNameMap>(
   tag: K,
-  options?: Partial<HTMLElementTagNameMap[K]>
+  options?: Partial<HTMLElementTagNameMap[K]> & {
+    dataset?: Record<string, string>;
+  }
 ) {
   const el = document.createElement(tag);
-  if (options) Object.assign(el, options);
+
+  if (options) {
+    const { dataset, ...rest } = options;
+    Object.assign(el, rest);
+
+    if (dataset) {
+      for (const key in dataset) {
+        el.dataset[key] = dataset[key];
+      }
+    }
+  }
+
   return el;
 }
 

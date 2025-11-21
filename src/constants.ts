@@ -28,6 +28,6 @@ export enum Firebase {
   NAME = 'name',
   SCHEDULE = 'schedule',
 }
-export const STAFF_NAME = 'staffName' as const;
+export const STAFF = 'staff' as const;
 
 export const NEWBIE = '신입';

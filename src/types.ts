@@ -19,4 +19,5 @@ export type ScheduleData = {
 export type Staff = {
   name: string;
   workDays: Record<string, number>;
+  docId: string;
 };

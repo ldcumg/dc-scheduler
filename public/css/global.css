@@ -138,6 +138,7 @@ footer {
 
 #apply-work-container {
   overflow-x: auto;
+  flex-wrap: wrap;
 }
 
 #staff-select-container {
@@ -183,10 +184,6 @@ footer {
   justify-items: center;
   gap: 12px;
   margin: 20px 0;
-}
-
-#day-form {
-  width: 100%;
 }
 
 #day-form label {

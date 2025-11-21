@@ -1,8 +1,8 @@
-import { doc, getDocs, updateDoc } from 'firebase/firestore';
+import { getDocs, updateDoc } from 'firebase/firestore';
 import { update, remove } from 'firebase/database';
-import { db, scheduleRef, staffCollection } from './firebase';
+import { scheduleRef, staffCollection, staffDoc } from './firebase';
 import { getSelectedDays } from './store';
-import { Firebase, SelectedDaysKey } from './constants';
+import { SelectedDaysKey } from './constants';
 import { operateStaffByName } from './feature/staff';
 import { getWeekKey } from './utils';
 
@@ -19,7 +19,7 @@ export const submitSelectedDays = async (name: string) => {
     });
     const weekKey = getWeekKey();
     await operateStaffByName(name, (docId) =>
-      updateDoc(doc(db, Firebase.STAFF, docId), {
+      updateDoc(staffDoc(docId), {
         [`workDays.${weekKey}`]: selectedWorkDays.size,
       })
     );

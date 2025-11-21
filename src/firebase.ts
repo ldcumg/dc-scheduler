@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import {
   getFirestore,
+  doc,
   collection,
   type CollectionReference,
   type QueryDocumentSnapshot,
@@ -38,6 +39,8 @@ export const staffCollection: CollectionReference<Staff> = collection(
   db,
   Firebase.STAFF
 ).withConverter(staffConverter);
+export const staffDoc = (docId: string) => doc(db, Firebase.STAFF, docId);
+
 export const scheduleRef = (name?: string) => {
   const path = name ? `${Firebase.SCHEDULE}/${name}` : Firebase.SCHEDULE;
   return ref(getDatabase(app), path);

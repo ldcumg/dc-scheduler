@@ -1,0 +1,223 @@
+@import './fonts.css';
+@import './variables.css';
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(3deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+html {
+  font-family: 'Pretendard', sans-serif;
+}
+
+body {
+  background-color: var(--color-primary);
+  color: white;
+  background-image: url('../assets/images/dongmun-image-green.jpeg');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  margin: 8px 4vw;
+  padding-bottom: 12px;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+h1 {
+  text-align: center;
+  color: white;
+}
+
+h2 {
+  margin-bottom: 16px;
+}
+
+h3 {
+  margin: 32px 0 16px 0;
+}
+
+section {
+  border-radius: 16px;
+  opacity: 0.9;
+  padding: 32px;
+}
+
+button,
+input {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+}
+
+button,
+input[type="button"],
+input[type="submit"],
+input[type="checkbox"],
+.checkbox-label {
+  cursor: pointer;
+}
+
+button,
+input[type="button"],
+input[type="submit"] {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+input[type="button"],
+input[type="submit"] {
+  width: 72px;
+}
+
+button {
+  width: 100px;
+  height: 44px;
+  font-size: 16px;
+}
+
+footer {
+  text-align: end;
+  margin-top: 6px;
+  margin-right: 8px;
+}
+
+.staff-button {
+  position: relative;
+}
+
+.edit,
+.delete {
+  animation: shake 0.25s ease-in-out infinite;
+  cursor: pointer;
+}
+
+.edit::before {
+  background: url('../assets/icons/pencil.png') no-repeat center / contain;
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+}
+
+.delete::before {
+  background: url('../assets/icons/x.png') no-repeat center / contain;
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+}
+
+#select-section {
+  background-color: var(--color-secondary);
+  padding: 20px 0;
+}
+
+#staff-select-container,
+#apply-work-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#apply-work-container {
+  overflow-x: auto;
+}
+
+#staff-select-container {
+  gap: 16px;
+  padding: 0 16px;
+}
+
+#control-container {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#name-input {
+  width: 120px;
+  margin-right: 4px;
+}
+
+#svg-container {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+}
+
+#name-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px
+}
+
+#name {
+  font-size: 24px;
+  padding: 0 32px;
+}
+
+#staff-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  justify-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+#day-form {
+  width: 100%;
+}
+
+#day-form label {
+  display: flex;
+  flex-direction: row;
+}
+
+#submit-button-container {
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+#schedule-display-section {
+  background-color: var(--color-third);
+  margin-top: 8px;
+}
+
+#schedule-display-section header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#day-form>div {
+  display: flex;
+  gap: 1rem;
+}
+
+#schedule-display-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}

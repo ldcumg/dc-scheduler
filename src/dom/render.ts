@@ -99,15 +99,10 @@ export const renderTotalWorkDays = (
   cumulationContainer: HTMLDivElement,
   staffs: Staff[]
 ) => {
-  const totals = staffs
-    .map((staff) => ({
-      name: staff.name,
-      totalWorkDays: Object.values(staff.workDays).reduce(
-        (sum, v) => sum + v,
-        0
-      ),
-    }))
-    .sort((a, b) => b.totalWorkDays - a.totalWorkDays);
+  const totals = staffs.map((staff) => ({
+    name: staff.name,
+    totalWorkDays: Object.values(staff.workDays).reduce((sum, v) => sum + v, 0),
+  }));
 
   cumulationContainer.innerText = totals
     .map(({ name, totalWorkDays }) => `${name} ${totalWorkDays}일`)

@@ -16,19 +16,29 @@
 }
 
 html {
-  font-family: 'Pretendard', sans-serif;
+  font-family: var(--font-main);
 }
 
 body {
   background-color: var(--color-primary);
   color: white;
+  margin: 8px 4vw;
+  padding-bottom: 12px;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-image: url('../assets/images/dongmun-image-green.jpeg');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
-  margin: 8px 4vw;
-  padding-bottom: 12px;
+  z-index: -1;
 }
 
 h1 {
@@ -46,7 +56,7 @@ h3 {
 
 section {
   border-radius: 16px;
-  opacity: 0.9;
+  /* opacity: 0.9; */
   padding: 32px;
 }
 
@@ -119,7 +129,7 @@ footer {
 }
 
 #select-section {
-  background-color: var(--color-secondary);
+  background-color: rgba(80, 78, 73, 0.9);
   padding: 20px 0;
 }
 
@@ -187,7 +197,7 @@ footer {
 }
 
 #schedule-display-section {
-  background-color: var(--color-third);
+  background-color: rgba(89, 71, 67, 0.9);
   margin-top: 8px;
 }
 

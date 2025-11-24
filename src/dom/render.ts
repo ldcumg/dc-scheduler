@@ -1,46 +1,6 @@
-import { SelectedDaysKey, WEEKDAYS } from '../constants';
-import { getSelectedDays } from '../store';
-import { getElement, getPeopleForDay, getSmartWeekRange } from '../utils';
+import { WEEKDAYS } from '../constants';
+import { getPeopleForDay, getSmartWeekRange } from '../utils';
 import type { ScheduleData, Staff } from '../types';
-import { createCheckbox } from './elements';
-
-export const renderCheckboxes = (
-  workDayContainer: HTMLDivElement = getElement(
-    '#workday-container',
-    HTMLDivElement
-  ),
-  laundryContainer: HTMLDivElement = getElement(
-    '#laundry-container',
-    HTMLDivElement
-  )
-) => {
-  const workFrag = document.createDocumentFragment();
-  const laundryFrag = document.createDocumentFragment();
-
-  const selectedWorkDays = getSelectedDays(SelectedDaysKey.WORK);
-  const selectedLaundryDays = getSelectedDays(SelectedDaysKey.LAUNDRY);
-
-  WEEKDAYS.forEach((day) => {
-    const { label: workLabel, checkbox: workCheckbox } = createCheckbox(
-      day,
-      selectedWorkDays,
-      'work'
-    );
-    const { label: laundryLabel, checkbox: laundryCheckbox } = createCheckbox(
-      day,
-      selectedLaundryDays,
-      'laundry'
-    );
-
-    laundryCheckbox.disabled = !selectedWorkDays.has(day);
-
-    workFrag.append(workLabel);
-    laundryFrag.append(laundryLabel);
-  });
-
-  workDayContainer.replaceChildren(workFrag);
-  laundryContainer.replaceChildren(laundryFrag);
-};
 
 /** 이번주 근무 기간 렌더링 */
 export const renderWeekRange = (weekRangeContainer: HTMLDivElement) => {

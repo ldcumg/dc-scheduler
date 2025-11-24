@@ -1,6 +1,5 @@
 import { onValue, DataSnapshot } from 'firebase/database';
 import { scheduleRef } from './firebase';
-import { syncSelectedDays } from './feature/schedule';
 import {
   delegateStaffEvents,
   delegateSubmitEvents,
@@ -8,7 +7,6 @@ import {
   bindCopyScheduleEvent,
 } from './dom/events';
 import {
-  renderCheckboxes,
   renderSchedule,
   renderTotalWorkDays,
   renderWeekRange,
@@ -33,8 +31,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     copyButton,
   } = initUI();
 
-  let init = true;
-  let savedStaff = getSavedStaff();
+  const savedStaff = getSavedStaff();
   const staffs = await fetchStaffs();
 
   if (savedStaff) {
@@ -56,11 +53,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   bindResetScheduleEvent(resetScheduleButton);
   bindCopyScheduleEvent(copyButton, scheduleDisplay);
 
-  onValue(scheduleRef(), async (snapshot: DataSnapshot) => {
+  onValue(scheduleRef(), (snapshot: DataSnapshot) => {
     const scheduleData = snapshot.val();
     renderSchedule(scheduleContainer, numberWorkContainer, scheduleData);
-    init ? (init = false) : (savedStaff = getSavedStaff());
-    savedStaff &&
-      (syncSelectedDays(savedStaff.name, scheduleData), renderCheckboxes());
   });
 });

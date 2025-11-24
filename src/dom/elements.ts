@@ -1,8 +1,6 @@
-import { get } from 'firebase/database';
 import { SelectedDaysKey, SVG_ICON_PATH, WEEKDAYS } from '../constants';
 import { syncSelectedDays } from '../feature/schedule';
-import type { SelectedDaysValue, Staff, Weekday } from '../types';
-import { scheduleRef } from '../firebase';
+import type { ScheduleData, SelectedDaysValue, Staff, Weekday } from '../types';
 import { appendSvgIcons, createEl } from '../utils';
 import { getSelectedDays } from '../store';
 
@@ -69,9 +67,10 @@ export const createStaffSelectContainer = async (staffs: Staff[]) => {
   return staffSelectContainer;
 };
 
-export const createApplyWorkContainer = async (
+export const createApplyWorkContainer = (
   staffName: string,
-  docId: string
+  docId: string,
+  scheduleData: ScheduleData
 ) => {
   const applyWorkContainer = createEl('div', { id: 'apply-work-container' });
   const nameContainer = createEl('div', { id: 'name-container' });
@@ -96,8 +95,7 @@ export const createApplyWorkContainer = async (
   const laundryTitle = createEl('h3', { textContent: '빨래' });
   const laundryContainer = createEl('div', { id: 'laundry-container' });
 
-  const scheduleSnapshot = await get(scheduleRef());
-  syncSelectedDays(staffName, scheduleSnapshot.val());
+  syncSelectedDays(staffName, scheduleData);
 
   const selectedWorkDays = getSelectedDays(SelectedDaysKey.WORK);
   const selectedLaundryDays = getSelectedDays(SelectedDaysKey.LAUNDRY);

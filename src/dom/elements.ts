@@ -1,10 +1,29 @@
 import { get } from 'firebase/database';
-import { SVG_ICON_PATH } from '../constants';
+import { SelectedDaysKey, SVG_ICON_PATH, WEEKDAYS } from '../constants';
 import { syncSelectedDays } from '../feature/schedule';
 import type { SelectedDaysValue, Staff, Weekday } from '../types';
-import { renderCheckboxes } from './render';
 import { scheduleRef } from '../firebase';
 import { appendSvgIcons, createEl } from '../utils';
+import { getSelectedDays } from '../store';
+
+const createCheckbox = (
+  day: Weekday,
+  selectedDays: SelectedDaysValue,
+  role: 'work' | 'laundry'
+) => {
+  const label = createEl('label', { className: 'checkbox-label' });
+  const checkbox = createEl('input', {
+    type: 'checkbox',
+    value: day,
+    name: day,
+  });
+  checkbox.dataset.role = role;
+  checkbox.dataset.day = day;
+  checkbox.checked = selectedDays.has(day);
+
+  label.append(checkbox, day);
+  return { label, checkbox };
+};
 
 export const createStaffSelectContainer = async (staffs: Staff[]) => {
   const staffSelectContainer = createEl('div', {
@@ -79,7 +98,23 @@ export const createApplyWorkContainer = async (
 
   const scheduleSnapshot = await get(scheduleRef());
   syncSelectedDays(staffName, scheduleSnapshot.val());
-  renderCheckboxes(workDayContainer, laundryContainer);
+
+  const selectedWorkDays = getSelectedDays(SelectedDaysKey.WORK);
+  const selectedLaundryDays = getSelectedDays(SelectedDaysKey.LAUNDRY);
+
+  WEEKDAYS.forEach((day) => {
+    const { label: workLabel } = createCheckbox(day, selectedWorkDays, 'work');
+    const { label: laundryLabel, checkbox: laundryCheckbox } = createCheckbox(
+      day,
+      selectedLaundryDays,
+      'laundry'
+    );
+
+    laundryCheckbox.disabled = !selectedWorkDays.has(day);
+
+    workDayContainer.appendChild(workLabel);
+    laundryContainer.appendChild(laundryLabel);
+  });
 
   const submitButtonContainer = createEl('div', {
     id: 'submit-button-container',
@@ -101,23 +136,4 @@ export const createApplyWorkContainer = async (
 
   applyWorkContainer.append(nameContainer, dayForm);
   return applyWorkContainer;
-};
-
-export const createCheckbox = (
-  day: Weekday,
-  selectedDays: SelectedDaysValue,
-  role: 'work' | 'laundry'
-) => {
-  const label = createEl('label', { className: 'checkbox-label' });
-  const checkbox = createEl('input', {
-    type: 'checkbox',
-    value: day,
-    name: day,
-  });
-  checkbox.dataset.role = role;
-  checkbox.dataset.day = day;
-  checkbox.checked = selectedDays.has(day);
-
-  label.append(checkbox, day);
-  return { label, checkbox };
 };

@@ -5,7 +5,12 @@ import {
   isWeekday,
   toggleStaffButtonClass,
 } from '../utils';
-import { selectDay, deselectDay, clearSelectedDays } from '../store';
+import {
+  selectDay,
+  deselectDay,
+  clearSelectedDays,
+  getScheduleData,
+} from '../store';
 import {
   attachNewbie,
   removeSavedStaff,
@@ -19,7 +24,7 @@ import {
 } from './elements';
 import { SelectedDaysKey } from '../constants';
 import { renderTotalWorkDays } from './render';
-import { get, remove, set } from 'firebase/database';
+import { remove, set } from 'firebase/database';
 import { scheduleRef } from '../firebase';
 
 export const delegateStaffEvents = (parentNode: HTMLElement) => {
@@ -80,6 +85,7 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
     ) {
       const docId = target.dataset.docId;
       if (!docId) return;
+      const scheduleData = getScheduleData();
 
       if (editMode) {
         const nameForm = getElement('#name-form', HTMLFormElement);
@@ -96,10 +102,8 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
       if (deleteMode) {
         if (confirm(`${target.textContent}을(를) 삭제하시겠습니까?`)) {
           await removeStaffByName(docId);
-          const targetRef = scheduleRef(target.textContent);
-          get(targetRef).then((snapshot) => {
-            snapshot.exists() && remove(targetRef);
-          });
+          Object.keys(scheduleData).includes(target.textContent) &&
+            remove(scheduleRef(target.textContent));
           target.remove();
           deleteMode = false;
           clearStaffButtonClasses(staffButtons, 'delete');
@@ -108,9 +112,12 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
       }
 
       saveStaff(target.textContent, docId);
-      createApplyWorkContainer(target.textContent, docId).then((el) =>
-        parentNode.replaceChildren(el)
+      const applyWorkContainer = createApplyWorkContainer(
+        target.textContent,
+        docId,
+        scheduleData
       );
+      parentNode.replaceChildren(applyWorkContainer);
     }
   });
 
@@ -126,20 +133,26 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
     if (!newName) return;
 
     await editStaff(editingTarget.dataset.docId, newName);
-    const targetRef = scheduleRef(editingTarget.textContent);
-    get(targetRef)
-      .then((snapshot) => {
-        snapshot.exists() && set(scheduleRef(newName), snapshot.val());
-        return snapshot;
-      })
-      .then((snapshot) => {
-        snapshot.exists() && remove(targetRef);
-      });
+
+    const scheduleData = getScheduleData();
+    const targetName = editingTarget.textContent;
+    if (Object.keys(scheduleData).includes(targetName)) {
+      set(scheduleRef(newName), scheduleData[targetName]);
+      remove(scheduleRef(targetName));
+    }
+    const cumulationContainer = getElement(
+      '#cumulation-container',
+      HTMLDivElement
+    );
+    cumulationContainer.innerText = cumulationContainer.innerText.replace(
+      targetName,
+      newName
+    );
     editingTarget.textContent = newName;
-    nameInput.value = '';
     editingTarget.classList.remove('editing');
     editingTarget = null;
     editMode = false;
+    nameInput.value = '';
     form.hidden = true;
     clearStaffButtonClasses(
       parentNode.querySelectorAll<HTMLButtonElement>('.staff-button'),

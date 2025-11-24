@@ -18,6 +18,7 @@ import {
 } from './dom/elements';
 import { fetchStaffs } from './api';
 import { getSavedStaff } from './feature/staff';
+import { setScheduleData } from './store';
 
 window.addEventListener('DOMContentLoaded', async () => {
   const {
@@ -31,19 +32,30 @@ window.addEventListener('DOMContentLoaded', async () => {
     copyButton,
   } = initUI();
 
+  let init = true;
   const savedStaff = getSavedStaff();
   const staffs = await fetchStaffs();
 
-  if (savedStaff) {
-    const applyWorkContainer = await createApplyWorkContainer(
-      savedStaff.name,
-      savedStaff.docId
-    );
-    selectSection.appendChild(applyWorkContainer);
-  } else {
+  onValue(scheduleRef(), async (snapshot: DataSnapshot) => {
+    const scheduleData = snapshot.val();
+    setScheduleData(scheduleData);
+    renderSchedule(scheduleContainer, numberWorkContainer, scheduleData);
+    if (init && savedStaff) {
+      const applyWorkContainer = createApplyWorkContainer(
+        savedStaff.name,
+        savedStaff.docId,
+        scheduleData
+      );
+      selectSection.appendChild(applyWorkContainer);
+    }
+    init && (init = false);
+  });
+
+  if (!savedStaff) {
     const staffSelectContainer = await createStaffSelectContainer(staffs);
     selectSection.appendChild(staffSelectContainer);
   }
+
   renderWeekRange(weekRangeContainer);
   renderTotalWorkDays(cumulationContainer, staffs);
 
@@ -52,9 +64,4 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   bindResetScheduleEvent(resetScheduleButton);
   bindCopyScheduleEvent(copyButton, scheduleDisplay);
-
-  onValue(scheduleRef(), (snapshot: DataSnapshot) => {
-    const scheduleData = snapshot.val();
-    renderSchedule(scheduleContainer, numberWorkContainer, scheduleData);
-  });
 });

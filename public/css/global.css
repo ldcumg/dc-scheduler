@@ -34,7 +34,7 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('../assets/images/dongmun-image-green.jpeg');
+  background-image: url('../assets/images/green-background.jpeg');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;

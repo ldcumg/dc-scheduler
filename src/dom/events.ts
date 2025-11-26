@@ -88,6 +88,7 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
       const docId = target.dataset.docId;
       if (!docId) return;
       const scheduleData = getScheduleData();
+      const targetName = target.textContent;
 
       if (editMode) {
         const nameForm = getElement('#name-form', HTMLFormElement);
@@ -102,20 +103,28 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
       }
 
       if (deleteMode) {
-        if (confirm(`${target.textContent}을(를) 삭제하시겠습니까?`)) {
+        if (confirm(`${targetName}을(를) 삭제하시겠습니까?`)) {
           await removeStaffByName(docId);
-          Object.keys(scheduleData).includes(target.textContent) &&
-            remove(scheduleRef(target.textContent));
+          Object.keys(scheduleData).includes(targetName) &&
+            remove(scheduleRef(targetName));
           target.remove();
+          const cumulationContainer = getElement(
+            '#cumulation-container',
+            HTMLDivElement
+          );
+          cumulationContainer.innerText = cumulationContainer.innerText.replace(
+            new RegExp(`${targetName}.*(\n|$)`),
+            ''
+          );
           deleteMode = false;
           clearStaffButtonClasses(staffButtons, 'delete');
         }
         return;
       }
 
-      saveStaff(target.textContent, docId);
+      saveStaff(targetName, docId);
       const applyWorkChildren = createApplyWorkChildren(
-        target.textContent,
+        targetName,
         docId,
         scheduleData
       );
@@ -239,7 +248,7 @@ export const bindResetScheduleEvent = (resetButton: HTMLButtonElement) => {
   resetButton.addEventListener('click', async () => {
     if (!isAfterSunday4PM(new Date()))
       return alert('일요일 오후 4시 이후에 초기화해주세요.');
-    
+
     if (confirm('근무표를 초기화하시겠습니까?')) {
       const workDayContainer = getElement('#workday-container', HTMLDivElement);
       const laundryContainer = getElement('#laundry-container', HTMLDivElement);

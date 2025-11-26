@@ -112,10 +112,9 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
             '#cumulation-container',
             HTMLDivElement
           );
-          cumulationContainer.innerText = cumulationContainer.innerText.replace(
-            new RegExp(`${targetName}.*(\n|$)`),
-            ''
-          );
+          cumulationContainer.innerText = cumulationContainer.innerText
+            .replace(new RegExp(`${targetName}.*(\n|$)`), '')
+            .trimEnd();
           deleteMode = false;
           clearStaffButtonClasses(staffButtons, 'delete');
         }
@@ -225,9 +224,9 @@ export const delegateSubmitEvents = (parentNode: HTMLElement) => {
 
   // submit-day-form 이벤트
   parentNode.addEventListener('submit', async (e) => {
+    e.preventDefault();
     const form = e.target;
     if (!(form instanceof HTMLFormElement) || form.id !== 'day-form') return;
-    e.preventDefault();
 
     const name = getElement('#name', HTMLSpanElement);
     if (!name.dataset.docId) return;

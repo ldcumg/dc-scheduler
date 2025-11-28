@@ -18,6 +18,8 @@ import {
 import { fetchStaffs } from './api';
 import { setScheduleData } from './store';
 import { getSavedStaff } from './localStorage';
+import { createElement } from './utils';
+import { createModal } from './modal';
 
 window.addEventListener('DOMContentLoaded', async () => {
   const {
@@ -62,5 +64,22 @@ window.addEventListener('DOMContentLoaded', async () => {
       selectSection.append(...applyWorkChildren);
     }
     init && (init = false);
+  });
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    const deferredPrompt = e;
+    const installBtn = createElement('button', {
+      type: 'button',
+      id: 'install-btn',
+      textContent: '설치',
+    });
+    const closeModal = createModal(installBtn);
+
+    installBtn.addEventListener('click', async () => {
+      await deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      closeModal();
+    });
   });
 });

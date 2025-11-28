@@ -1,21 +1,29 @@
 import { WEEKDAYS } from './constants';
 import type { ScheduleData, SelectedDaysKey, Weekday } from './types';
 
-export function createEl<K extends keyof HTMLElementTagNameMap>(
+export function createElement<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   options?: Partial<HTMLElementTagNameMap[K]> & {
     dataset?: Record<string, string>;
+    events?: Record<string, EventListenerOrEventListenerObject>;
   }
 ) {
   const el = document.createElement(tag);
 
   if (options) {
-    const { dataset, ...rest } = options;
+    const { dataset, events, ...rest } = options;
+
     Object.assign(el, rest);
 
     if (dataset) {
       for (const key in dataset) {
         el.dataset[key] = dataset[key];
+      }
+    }
+
+    if (events) {
+      for (const key in events) {
+        el.addEventListener(key, events[key]);
       }
     }
   }

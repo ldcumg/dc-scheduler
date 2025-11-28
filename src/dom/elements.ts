@@ -2,15 +2,15 @@ import { SelectedDays, SVG_ICON_PATH, WEEKDAYS } from '../constants';
 import { syncSelectedDays } from '../store';
 import { getSelectedDays } from '../store';
 import type { ScheduleData, SelectedDaysValue, Staff, Weekday } from '../types';
-import { appendSvgIcons, createEl } from '../utils';
+import { appendSvgIcons, createElement } from '../utils';
 
 export const createCheckbox = (
   day: Weekday,
   selectedDays: SelectedDaysValue,
   role: 'work' | 'laundry'
 ) => {
-  const label = createEl('label', { className: 'checkbox-label' });
-  const checkbox = createEl('input', {
+  const label = createElement('label', { className: 'checkbox-label' });
+  const checkbox = createElement('input', {
     type: 'checkbox',
     value: day,
     name: day,
@@ -25,17 +25,17 @@ export const createCheckbox = (
 };
 
 export const createStaffSelectChildren = async (staffs: Staff[]) => {
-  const controlContainer = createEl('div', { id: 'control-container' });
-  const svgContainer = createEl('div', { id: 'svg-container' });
-  const staffContainer = createEl('div', { id: 'staff-container' });
+  const controlContainer = createElement('div', { id: 'control-container' });
+  const svgContainer = createElement('div', { id: 'svg-container' });
+  const staffContainer = createElement('div', { id: 'staff-container' });
 
-  const nameForm = createEl('form', { id: 'name-form', hidden: true });
-  const nameInput = createEl('input', {
+  const nameForm = createElement('form', { id: 'name-form', hidden: true });
+  const nameInput = createElement('input', {
     type: 'text',
     id: 'name-input',
     placeholder: '변경할 이름 입력',
   });
-  const nameButton = createEl('button', {
+  const nameButton = createElement('button', {
     type: 'submit',
     id: 'name-button',
     textContent: '완료',
@@ -51,7 +51,7 @@ export const createStaffSelectChildren = async (staffs: Staff[]) => {
   ]);
 
   staffs.forEach(({ name, docId }) => {
-    const staffButton = createEl('button', {
+    const staffButton = createElement('button', {
       type: 'button',
       className: 'staff-button',
       textContent: name,
@@ -68,15 +68,15 @@ export const createApplyWorkChildren = (
   docId: string,
   scheduleData: ScheduleData
 ) => {
-  const nameContainer = createEl('div', { id: 'name-container' });
+  const nameContainer = createElement('div', { id: 'name-container' });
 
-  const nameSign = createEl('span', { textContent: '이름 :' });
-  const nameSpan = createEl('span', {
+  const nameSign = createElement('span', { textContent: '이름 :' });
+  const nameSpan = createElement('span', {
     id: 'name',
     textContent: staffName,
     dataset: { docId },
   });
-  const staffChangeButton = createEl('button', {
+  const staffChangeButton = createElement('button', {
     type: 'button',
     id: 'staff-change-button',
     textContent: '변경',
@@ -84,11 +84,11 @@ export const createApplyWorkChildren = (
 
   nameContainer.append(nameSign, nameSpan, staffChangeButton);
 
-  const dayForm = createEl('form', { id: 'day-form' });
-  const workTitle = createEl('h3', { textContent: '근무' });
-  const workDayContainer = createEl('div', { id: 'workday-container' });
-  const laundryTitle = createEl('h3', { textContent: '빨래' });
-  const laundryContainer = createEl('div', { id: 'laundry-container' });
+  const dayForm = createElement('form', { id: 'day-form' });
+  const workTitle = createElement('h3', { textContent: '근무' });
+  const workDayContainer = createElement('div', { id: 'workday-container' });
+  const laundryTitle = createElement('h3', { textContent: '빨래' });
+  const laundryContainer = createElement('div', { id: 'laundry-container' });
 
   syncSelectedDays(staffName, scheduleData);
 
@@ -109,10 +109,10 @@ export const createApplyWorkChildren = (
     laundryContainer.appendChild(laundryLabel);
   });
 
-  const submitButtonContainer = createEl('div', {
+  const submitButtonContainer = createElement('div', {
     id: 'submit-button-container',
   });
-  const submitButton = createEl('button', {
+  const submitButton = createElement('button', {
     type: 'submit',
     id: 'submit-button',
     textContent: '제출',

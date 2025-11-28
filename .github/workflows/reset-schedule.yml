@@ -3,17 +3,22 @@ name: Reset schedule
 on:
   schedule:
     - cron: '0 7 * * 0' # 매주 일요일 16시
+  workflow_dispatch:
 
 jobs:
   reset-schedule:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 20
-      - name: Install deps
+
+      - name: Install dependencies
         run: pnpm install
+
       - name: Reset schedule
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

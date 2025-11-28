@@ -174,7 +174,7 @@ footer {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
   justify-items: center;
-  gap: 12px;
+  gap: 20px 12px;
   margin: 20px 0;
 }
 

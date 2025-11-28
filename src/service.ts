@@ -1,7 +1,7 @@
 import { deleteDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { staffDoc } from './firebase';
 import { NEWBIE } from './constants';
-import { createEl } from './utils';
+import { createElement } from './utils';
 
 /** DB에 신입 추가 */
 const dbAddNewbie = async (staffContainer: HTMLDivElement, docId: string) => {
@@ -17,7 +17,7 @@ const dbAddNewbie = async (staffContainer: HTMLDivElement, docId: string) => {
 export const attachNewbie = async (staffContainer: HTMLDivElement) => {
   const docId = new Date().getTime().toString();
   const name = await dbAddNewbie(staffContainer, docId);
-  const staffButton = createEl('button', {
+  const staffButton = createElement('button', {
     type: 'button',
     className: 'staff-button',
     textContent: name,

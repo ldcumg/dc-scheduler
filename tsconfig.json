@@ -5,7 +5,9 @@
     "moduleResolution": "node",
     "outDir": "dist",
     "strict": true,
-    "esModuleInterop": true
+    "noUnusedLocals": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"]
+  "include": ["src", "types.d.ts"]
 }

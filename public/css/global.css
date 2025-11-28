@@ -16,7 +16,7 @@
 }
 
 html {
-  font-family: var(--font-main);
+  font-family: 'Pretendard', sans-serif;
 }
 
 body {
@@ -88,6 +88,26 @@ footer {
   text-align: end;
   margin-top: 6px;
   margin-right: 8px;
+}
+
+.modal {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background-color: white;
+  width: 80%;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px;
+}
+
+.modal>button {
+  width: 112px;
+  height: 44px;
+  font-size: 16px;
 }
 
 .staff-button {

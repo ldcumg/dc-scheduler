@@ -52,7 +52,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     setScheduleData(scheduleData);
     renderSchedule(scheduleContainer, numberWorkContainer, scheduleData);
     init || (staffs = await fetchStaffs());
-    console.log('[ ㏒ ] staffs =>', staffs);
     renderTotalWorkDays(cumulationContainer, staffs);
     if (init && savedStaff) {
       const applyWorkChildren = createApplyWorkChildren(

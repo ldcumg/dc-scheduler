@@ -3,7 +3,6 @@ import { scheduleRef } from './firebase';
 import {
   delegateStaffEvents,
   delegateSubmitEvents,
-  bindResetScheduleEvent,
   bindCopyScheduleEvent,
 } from './dom/events';
 import {
@@ -26,7 +25,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     scheduleDisplay,
     weekRangeContainer,
     scheduleContainer,
-    resetScheduleButton,
     numberWorkContainer,
     cumulationContainer,
     copyButton,
@@ -62,6 +60,5 @@ window.addEventListener('DOMContentLoaded', async () => {
   delegateStaffEvents(selectSection);
   delegateSubmitEvents(selectSection);
 
-  bindResetScheduleEvent(resetScheduleButton);
   bindCopyScheduleEvent(copyButton, scheduleDisplay);
 });

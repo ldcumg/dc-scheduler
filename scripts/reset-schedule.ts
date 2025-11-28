@@ -7,7 +7,8 @@ const serviceAccount = JSON.parse(
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://your-project.firebaseio.com',
+  databaseURL:
+    'https://dongmun-work-schedule-default-rtdb.asia-southeast1.firebasedatabase.app',
 });
 
 (async () => {

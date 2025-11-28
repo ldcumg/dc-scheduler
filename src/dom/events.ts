@@ -1,8 +1,7 @@
-import { fetchStaffs, resetSchedule, submitSelectedDays } from '../api';
+import { fetchStaffs, submitSelectedDays } from '../api';
 import {
   clearStaffButtonClasses,
   getElement,
-  isAfterSunday4PM,
   isWeekday,
   toggleStaffButtonClass,
 } from '../utils';
@@ -19,11 +18,7 @@ import {
   removeStaffByName,
   saveStaff,
 } from '../feature/staff';
-import {
-  createApplyWorkChildren,
-  createStaffSelectChildren,
-  createWeeklyCheckboxFrag,
-} from './elements';
+import { createApplyWorkChildren, createStaffSelectChildren } from './elements';
 import { SelectedDaysKey } from '../constants';
 import { renderTotalWorkDays } from './render';
 import { remove, set } from 'firebase/database';
@@ -239,26 +234,6 @@ export const delegateSubmitEvents = (parentNode: HTMLElement) => {
     );
     const staffs = await fetchStaffs();
     renderTotalWorkDays(cumulationContainer, staffs);
-  });
-};
-
-/** 근무표 초기화 버튼 이벤트 */
-export const bindResetScheduleEvent = (resetButton: HTMLButtonElement) => {
-  resetButton.addEventListener('click', async () => {
-    if (!isAfterSunday4PM(new Date()))
-      return alert('일요일 오후 4시 이후에 초기화해주세요.');
-
-    if (confirm('근무표를 초기화하시겠습니까?')) {
-      const workDayContainer = getElement('#workday-container', HTMLDivElement);
-      const laundryContainer = getElement('#laundry-container', HTMLDivElement);
-
-      await resetSchedule();
-      clearSelectedDays();
-      const { workCheckboxesFrag, laundryCheckboxesFrag } =
-        createWeeklyCheckboxFrag();
-      workDayContainer.replaceChildren(workCheckboxesFrag);
-      laundryContainer.replaceChildren(laundryCheckboxesFrag);
-    }
   });
 };
 

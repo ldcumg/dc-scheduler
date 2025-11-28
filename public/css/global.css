@@ -188,12 +188,6 @@ footer {
   margin-top: 8px;
 }
 
-#schedule-display-section header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 #day-form>div {
   display: flex;
   gap: 3vw;

@@ -24,30 +24,6 @@ export const createCheckbox = (
   return { label, checkbox };
 };
 
-export const createWeeklyCheckboxFrag = () => {
-  const selectedWorkDays = getSelectedDays(SelectedDaysKey.WORK);
-  const selectedLaundryDays = getSelectedDays(SelectedDaysKey.LAUNDRY);
-
-  const workCheckboxesFrag = document.createDocumentFragment();
-  const laundryCheckboxesFrag = document.createDocumentFragment();
-
-  WEEKDAYS.forEach((day) => {
-    const { label: workLabel } = createCheckbox(day, selectedWorkDays, 'work');
-    const { label: laundryLabel, checkbox: laundryCheckbox } = createCheckbox(
-      day,
-      selectedLaundryDays,
-      'laundry'
-    );
-
-    laundryCheckbox.disabled = !selectedWorkDays.has(day);
-
-    workCheckboxesFrag.appendChild(workLabel);
-    laundryCheckboxesFrag.appendChild(laundryLabel);
-  });
-
-  return { workCheckboxesFrag, laundryCheckboxesFrag };
-};
-
 export const createStaffSelectChildren = async (staffs: Staff[]) => {
   const controlContainer = createEl('div', { id: 'control-container' });
   const svgContainer = createEl('div', { id: 'svg-container' });
@@ -115,10 +91,23 @@ export const createApplyWorkChildren = (
   const laundryContainer = createEl('div', { id: 'laundry-container' });
 
   syncSelectedDays(staffName, scheduleData);
-  const { workCheckboxesFrag, laundryCheckboxesFrag } =
-    createWeeklyCheckboxFrag();
-  workDayContainer.appendChild(workCheckboxesFrag);
-  laundryContainer.appendChild(laundryCheckboxesFrag);
+
+  const selectedWorkDays = getSelectedDays(SelectedDaysKey.WORK);
+  const selectedLaundryDays = getSelectedDays(SelectedDaysKey.LAUNDRY);
+
+  WEEKDAYS.forEach((day) => {
+    const { label: workLabel } = createCheckbox(day, selectedWorkDays, 'work');
+    const { label: laundryLabel, checkbox: laundryCheckbox } = createCheckbox(
+      day,
+      selectedLaundryDays,
+      'laundry'
+    );
+
+    laundryCheckbox.disabled = !selectedWorkDays.has(day);
+
+    workDayContainer.appendChild(workLabel);
+    laundryContainer.appendChild(laundryLabel);
+  });
 
   const submitButtonContainer = createEl('div', {
     id: 'submit-button-container',

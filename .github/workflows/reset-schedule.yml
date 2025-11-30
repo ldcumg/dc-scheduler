@@ -1,0 +1,26 @@
+name: Reset schedule
+
+on:
+  schedule:
+    - cron: '0 7 * * 0' # 일요일 16시
+
+jobs:
+  reset-schedule:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npx pnpm install
+
+      - name: Reset RTDB
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          npx pnpm dlx tsx scripts/reset-schedule.ts

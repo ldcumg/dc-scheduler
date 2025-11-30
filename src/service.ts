@@ -1,22 +1,14 @@
 import { deleteDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { staffDoc } from './firebase';
-import { NEWBIE } from './constants';
 import { createElement } from './utils';
 
-/** DB에 신입 추가 */
-const dbAddNewbie = async (staffContainer: HTMLDivElement, docId: string) => {
-  const duplicates = Array.from(
-    staffContainer.querySelectorAll<HTMLButtonElement>('.staff-button')
-  ).filter((btn) => btn.textContent.startsWith(NEWBIE)).length;
-  const name = duplicates > 0 ? `${NEWBIE}${duplicates + 1}` : NEWBIE;
-
-  await setDoc(staffDoc(docId), { name, workDays: {} });
-  return name;
-};
-
-export const attachNewbie = async (staffContainer: HTMLDivElement) => {
+/** 신입 추가 */
+export const addNewbie = async (
+  staffContainer: HTMLDivElement,
+  name: string
+) => {
   const docId = new Date().getTime().toString();
-  const name = await dbAddNewbie(staffContainer, docId);
+  await setDoc(staffDoc(docId), { name, workDays: {} });
   const staffButton = createElement('button', {
     type: 'button',
     className: 'staff-button',

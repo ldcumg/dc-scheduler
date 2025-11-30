@@ -1,4 +1,4 @@
-import { WEEKDAYS } from './constants';
+import { NEWBIE, WEEKDAYS } from './constants';
 import type { ScheduleData, SelectedDaysKey, Weekday } from './types';
 
 export function createElement<K extends keyof HTMLElementTagNameMap>(
@@ -86,6 +86,15 @@ export function toggleStaffButtonClass(
     if (condition) btn.classList.add(className);
     else btn.classList.remove(className);
   });
+}
+
+export function newbieName() {
+  const staffContainer = getElement('#staff-container', HTMLDivElement);
+
+  const duplicates = Array.from(
+    staffContainer.querySelectorAll<HTMLButtonElement>('.staff-button')
+  ).filter((btn) => btn.textContent.startsWith(NEWBIE)).length;
+  return duplicates > 0 ? `${NEWBIE}${duplicates + 1}` : NEWBIE;
 }
 
 export function isWeekday(v: string | undefined): v is Weekday {

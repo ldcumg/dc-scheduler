@@ -3,6 +3,7 @@ import {
   clearStaffButtonClasses,
   getElement,
   isWeekday,
+  newbieName,
   toggleStaffButtonClass,
 } from '../utils';
 import {
@@ -11,7 +12,7 @@ import {
   clearSelectedDays,
   getScheduleData,
 } from '../store';
-import { attachNewbie, editStaff, removeStaffByName } from '../service';
+import { addNewbie, editStaff, removeStaffByName } from '../service';
 import { createApplyWorkChildren, createStaffSelectChildren } from './elements';
 import { SelectedDays } from '../constants';
 import { remove, set } from 'firebase/database';
@@ -42,12 +43,13 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
           editMode = deleteMode = false;
           nameForm.hidden || (nameForm.hidden = true);
           clearStaffButtonClasses(staffButtons, 'edit', 'delete');
-          if (confirm('신입을 추가하시겠습니까?')) {
+          const name = newbieName();
+          if (confirm(`${name}을(를) 추가하시겠습니까?`)) {
             const staffContainer = getElement(
               '#staff-container',
               HTMLDivElement
             );
-            await attachNewbie(staffContainer);
+            await addNewbie(staffContainer, name);
           }
           break;
         case 1: // 편집

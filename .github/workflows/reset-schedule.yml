@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # 5️⃣ PNPM 빌드 스크립트 승인
+      # 5️⃣ Firebase Admin SDK 빌드 승인
       - name: Approve PNPM builds
         run: pnpm approve-builds
 
@@ -37,5 +37,5 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           echo "=== Starting RTDB reset script ==="
-          npx tsgo scripts/reset-schedule.ts
+          pnpm exec tsgo scripts/reset-schedule.ts
           echo "=== Finished RTDB reset script ==="

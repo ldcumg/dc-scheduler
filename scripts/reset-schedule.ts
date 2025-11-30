@@ -1,3 +1,5 @@
+console.log('script start');
+
 import admin from 'firebase-admin';
 import { Firebase } from '../src/constants';
 
@@ -11,7 +13,6 @@ admin.initializeApp({
     'https://dongmun-work-schedule-default-rtdb.asia-southeast1.firebasedatabase.app',
 });
 
-console.log('script start');
 
 (async () => {
   const db = admin.database();

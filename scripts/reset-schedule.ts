@@ -13,6 +13,8 @@ admin.initializeApp({
 
 (async () => {
   const db = admin.database();
-
+  console.log('Deleting schedule...');
   await db.ref(Firebase.SCHEDULE).remove();
+  console.log('RTDB 초기화 완료');
+  process.exit(0);
 })();

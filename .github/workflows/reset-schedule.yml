@@ -3,7 +3,7 @@ name: Reset schedule
 on:
   schedule:
     - cron: '0 7 * * 0' # 매주 일요일 16시
-  workflow_dispatch:
+  workflow_dispatch: # 수동 실행 옵션
 
 jobs:
   reset-schedule:
@@ -12,14 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install dependencies
         run: pnpm install
@@ -27,4 +26,4 @@ jobs:
       - name: Reset schedule
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: pnpm ts-node scripts/reset-schedule.ts
+        run: pnpm exec tsgo scripts/reset-schedule.ts

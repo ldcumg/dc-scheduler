@@ -2,7 +2,7 @@ name: Reset schedule
 
 on:
   schedule:
-    - cron: '0 7 * * 0' # 매주 일요일 16시
+    - cron: '0 7 * * 0' # 매주 일요일 16시 (UTC 07:00)
   workflow_dispatch: # 수동 실행 가능
 
 jobs:
@@ -10,32 +10,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 코드 가져오기
+      # 1. 코드 가져오기
       - uses: actions/checkout@v3
 
-      # Node.js 설치
+      # 2. Node.js 설치
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      # pnpm 설치
+      # 3. pnpm 설치
       - name: Install pnpm
         run: npm install -g pnpm
 
-      # 프로젝트 의존성 설치
+      # 4. 의존성 설치 (package.json 설정을 따름)
       - name: Install dependencies
         run: pnpm install
 
-      # pnpm 빌드 허용
-      - name: Approve PNPM builds
-        run: pnpm approve-builds
-
-      # RTDB 초기화 스크립트 실행
+      # 5. RTDB 초기화 스크립트 실행 (tsx 사용)
       - name: Reset RTDB
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           echo "=== Starting RTDB reset script ==="
-          pnpm exec tsgo scripts/reset-schedule.ts
+          pnpm dlx tsx scripts/reset-schedule.ts
           echo "=== Finished RTDB reset script ==="

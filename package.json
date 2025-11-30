@@ -21,5 +21,12 @@
   "dependencies": {
     "firebase": "^12.6.0",
     "firebase-admin": "^13.6.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "protobufjs",
+      "@firebase/util"
+    ]
   }
 }

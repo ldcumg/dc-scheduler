@@ -1,5 +1,5 @@
 import { onValue, DataSnapshot } from 'firebase/database';
-import { scheduleRef } from './firebase';
+import { rootRef } from './firebase';
 import {
   delegateStaffEvents,
   delegateSubmitEvents,
@@ -11,12 +11,8 @@ import {
   renderWeekRange,
 } from './dom/render';
 import { initUI } from './dom/init';
-import {
-  createApplyWorkChildren,
-  createStaffSelectChildren,
-} from './dom/elements';
-import { fetchStaffs } from './api';
-import { setScheduleData } from './store';
+import { renderApplySection, renderStaffSection } from './dom/render';
+import { setScheduleData, setStaffData, syncSelectedDays } from './store';
 import { getSavedStaff } from './localStorage';
 import { createElement } from './utils';
 import { createModal } from './modal';
@@ -33,37 +29,36 @@ window.addEventListener('DOMContentLoaded', async () => {
   } = initUI();
 
   let init = true;
-  const savedStaff = getSavedStaff();
-  let staffs = await fetchStaffs();
-
-  if (!savedStaff) {
-    const staffSelectChildren = await createStaffSelectChildren(staffs);
-    selectSection.append(...staffSelectChildren);
-  }
+  let savedStaff = getSavedStaff();
 
   renderWeekRange(weekRangeContainer);
-  renderTotalWorkDays(cumulationContainer, staffs);
 
   delegateStaffEvents(selectSection);
   delegateSubmitEvents(selectSection);
 
   bindCopyScheduleEvent(copyButton, scheduleDisplay);
 
-  onValue(scheduleRef(), async (snapshot: DataSnapshot) => {
-    const scheduleData = snapshot.val();
-    setScheduleData(scheduleData);
-    renderSchedule(scheduleContainer, numberWorkContainer, scheduleData);
-    init || (staffs = await fetchStaffs());
-    renderTotalWorkDays(cumulationContainer, staffs);
-    if (init && savedStaff) {
-      const applyWorkChildren = createApplyWorkChildren(
-        savedStaff.name,
-        savedStaff.docId,
-        scheduleData
-      );
-      selectSection.append(...applyWorkChildren);
-    }
-    init && (init = false);
+  onValue(rootRef, async (snapshot: DataSnapshot) => {
+    const { staff, schedule } = snapshot.val();
+    const sortedStaff = Object.keys(staff)
+      .sort()
+      .map((key) => ({ staffKey: key, ...staff[key] }));
+
+    setStaffData(sortedStaff);
+    setScheduleData(schedule);
+
+    init
+      ? syncSelectedDays(savedStaff.name, schedule)
+      : (savedStaff = getSavedStaff());
+
+    renderSchedule(scheduleContainer, numberWorkContainer, schedule);
+    renderTotalWorkDays(cumulationContainer, sortedStaff);
+
+    savedStaff
+      ? renderApplySection(selectSection, savedStaff.name, savedStaff.staffKey)
+      : renderStaffSection(selectSection, sortedStaff);
+
+    init = false;
   });
 
   const isKakaoInApp = /KAKAOTALK/i.test(navigator.userAgent);

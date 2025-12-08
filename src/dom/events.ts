@@ -1,4 +1,3 @@
-import { fetchStaffs, submitSelectedDays } from '../api';
 import {
   clearStaffButtonClasses,
   getElement,
@@ -11,11 +10,18 @@ import {
   deselectDay,
   clearSelectedDays,
   getScheduleData,
+  getStaffData,
+  syncSelectedDays,
 } from '../store';
-import { addNewbie, editStaff, removeStaffByName } from '../service';
-import { createApplyWorkChildren, createStaffSelectChildren } from './elements';
+import {
+  addNewbie,
+  changeStaffName,
+  removeStaff,
+  submitSelectedDays,
+} from '../api';
+import { renderApplySection, renderStaffSection } from './render';
 import { SelectedDays } from '../constants';
-import { remove, set } from 'firebase/database';
+import { remove } from 'firebase/database';
 import { scheduleRef } from '../firebase';
 import { removeSavedStaff, saveStaff } from '../localStorage';
 
@@ -44,13 +50,7 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
           nameForm.hidden || (nameForm.hidden = true);
           clearStaffButtonClasses(staffButtons, 'edit', 'delete');
           const name = newbieName();
-          if (confirm(`${name}을(를) 추가하시겠습니까?`)) {
-            const staffContainer = getElement(
-              '#staff-container',
-              HTMLDivElement
-            );
-            await addNewbie(staffContainer, name);
-          }
+          if (confirm(`${name}을(를) 추가하시겠습니까?`)) await addNewbie(name);
           break;
         case 1: // 편집
           editMode = !editMode;
@@ -76,8 +76,8 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
       target instanceof HTMLButtonElement &&
       target.classList.contains('staff-button')
     ) {
-      const docId = target.dataset.docId;
-      if (!docId) return;
+      const staffKey = target.dataset.staffKey;
+      if (!staffKey) return;
       const scheduleData = getScheduleData();
       const targetName = target.textContent;
 
@@ -95,30 +95,18 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
 
       if (deleteMode) {
         if (confirm(`${targetName}을(를) 삭제하시겠습니까?`)) {
-          await removeStaffByName(docId);
+          await removeStaff(staffKey);
           Object.keys(scheduleData).includes(targetName) &&
             remove(scheduleRef(targetName));
-          target.remove();
-          const cumulationContainer = getElement(
-            '#cumulation-container',
-            HTMLDivElement
-          );
-          cumulationContainer.innerText = cumulationContainer.innerText
-            .replace(new RegExp(`${targetName}.*(\n|$)`), '')
-            .trimEnd();
           deleteMode = false;
           clearStaffButtonClasses(staffButtons, 'delete');
         }
         return;
       }
 
-      saveStaff(targetName, docId);
-      const applyWorkChildren = createApplyWorkChildren(
-        targetName,
-        docId,
-        scheduleData
-      );
-      parentNode.replaceChildren(...applyWorkChildren);
+      saveStaff(targetName, staffKey);
+      syncSelectedDays(targetName, scheduleData);
+      renderApplySection(parentNode, targetName, staffKey);
     }
   });
 
@@ -127,28 +115,14 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
     if (!(form instanceof HTMLFormElement) || form.id !== 'name-form') return;
 
     e.preventDefault();
-    if (!editingTarget || !editingTarget.dataset.docId) return;
+    if (!editingTarget || !editingTarget.dataset.staffKey) return;
 
     const nameInput = getElement('#name-input', HTMLInputElement);
     const newName = nameInput.value.trim();
     if (!newName) return;
 
-    await editStaff(editingTarget.dataset.docId, newName);
+    await changeStaffName(editingTarget.dataset.staffKey, newName);
 
-    const scheduleData = getScheduleData();
-    const targetName = editingTarget.textContent;
-    if (Object.keys(scheduleData).includes(targetName)) {
-      set(scheduleRef(newName), scheduleData[targetName]);
-      remove(scheduleRef(targetName));
-      const cumulationContainer = getElement(
-        '#cumulation-container',
-        HTMLDivElement
-      );
-      cumulationContainer.innerText = cumulationContainer.innerText.replace(
-        targetName,
-        newName
-      );
-    }
     editingTarget.textContent = newName;
     editingTarget.classList.remove('editing');
     editingTarget = null;
@@ -172,10 +146,8 @@ export const delegateSubmitEvents = (parentNode: HTMLElement) => {
     ) {
       removeSavedStaff();
       clearSelectedDays();
-      const staffs = await fetchStaffs();
-      createStaffSelectChildren(staffs).then((elements) =>
-        parentNode.replaceChildren(...elements)
-      );
+      const staffs = getStaffData();
+      renderStaffSection(parentNode, staffs);
     }
   });
 
@@ -220,9 +192,9 @@ export const delegateSubmitEvents = (parentNode: HTMLElement) => {
     if (!(form instanceof HTMLFormElement) || form.id !== 'day-form') return;
 
     const name = getElement('#name', HTMLSpanElement);
-    if (!name.dataset.docId) return;
+    if (!name.dataset.staffKey) return;
 
-    await submitSelectedDays(name.textContent, name.dataset.docId);
+    await submitSelectedDays(name.textContent, name.dataset.staffKey);
   });
 };
 

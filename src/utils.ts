@@ -1,4 +1,5 @@
 import { NEWBIE, WEEKDAYS } from './constants';
+import { getStaffData } from './store';
 import type { ScheduleData, SelectedDaysKey, Weekday } from './types';
 
 export function createElement<K extends keyof HTMLElementTagNameMap>(
@@ -89,11 +90,12 @@ export function toggleStaffButtonClass(
 }
 
 export function newbieName() {
-  const staffContainer = getElement('#staff-container', HTMLDivElement);
+  const staffs = getStaffData();
 
-  const duplicates = Array.from(
-    staffContainer.querySelectorAll<HTMLButtonElement>('.staff-button')
-  ).filter((btn) => btn.textContent.startsWith(NEWBIE)).length;
+  const duplicates = staffs.filter((staff) =>
+    staff.name.startsWith(NEWBIE)
+  ).length;
+  
   return duplicates > 0 ? `${NEWBIE}${duplicates + 1}` : NEWBIE;
 }
 

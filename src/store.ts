@@ -1,6 +1,12 @@
 import { SelectedDays } from './constants';
-import type { ScheduleData, SelectedDaysKey, Weekday } from './types';
+import type {
+  ScheduleData,
+  SelectedDaysKey,
+  StaffData,
+  Weekday,
+} from './types';
 
+let _staffData: StaffData[] = [];
 let _scheduleData: ScheduleData = {};
 
 const _selectedDays: Record<SelectedDaysKey, Set<Weekday>> = {
@@ -9,11 +15,14 @@ const _selectedDays: Record<SelectedDaysKey, Set<Weekday>> = {
 };
 
 // getter
+export const getStaffData = () => _staffData;
 export const getScheduleData = () => _scheduleData;
 
 export const getSelectedDays = (key: SelectedDaysKey) => _selectedDays[key];
 
 // setter
+export const setStaffData = (staffData: StaffData[]) =>
+  (_staffData = staffData);
 export const setScheduleData = (scheduleData: ScheduleData) =>
   (_scheduleData = scheduleData);
 
@@ -28,12 +37,9 @@ export const clearSelectedDays = () => {
 };
 
 /** 선택된 날들을 스케줄 데이터에서 동기화 */
-export const syncSelectedDays = (
-  savedName: string,
-  scheduleData: ScheduleData
-) => {
-  if (savedName && scheduleData?.[savedName]) {
-    const { work, laundry } = scheduleData[savedName];
+export const syncSelectedDays = (name: string, scheduleData: ScheduleData) => {
+  if (name && scheduleData?.[name]) {
+    const { work, laundry } = scheduleData[name];
 
     work && work.forEach((day) => selectDay(SelectedDays.WORK, day));
     laundry && laundry.forEach((day) => selectDay(SelectedDays.LAUNDRY, day));

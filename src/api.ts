@@ -1,27 +1,35 @@
-import { getDocs, updateDoc } from 'firebase/firestore';
-import { update } from 'firebase/database';
-import { scheduleRef, staffCollection, staffDoc } from './firebase';
+import { push, remove, set, update } from 'firebase/database';
+import { staffRef } from './firebase';
+import { rootRef } from './firebase';
 import { getSelectedDays } from './store';
-import { SelectedDays } from './constants';
+import { Firebase, SelectedDays } from './constants';
 import { getWeekKey } from './utils';
 
-export const fetchStaffs = async () =>
-  (await getDocs(staffCollection)).docs.map((doc) => ({
-    ...doc.data(),
-    docId: doc.id,
-  }));
+/** 신입 추가 */
+export const addNewbie = async (name: string) =>
+  await set(push(staffRef()), { name });
+
+/** staff 이름 변경 */
+export const changeStaffName = async (staffKey: string, newName: string) =>
+  await update(staffRef(staffKey), { name: newName });
+
+/** staff 삭제 */
+export const removeStaff = async (staffKey: string) =>
+  await remove(staffRef(staffKey));
 
 /** 근무 제출 */
-export const submitSelectedDays = async (name: string, docId: string) => {
+export const submitSelectedDays = async (name: string, staffKey: string) => {
   try {
     const selectedWorkDays = getSelectedDays(SelectedDays.WORK);
     const weekKey = getWeekKey();
-    await updateDoc(staffDoc(docId), {
-      [`workDays.${weekKey}`]: selectedWorkDays.size,
-    });
-    await update(scheduleRef(name), {
-      work: [...selectedWorkDays],
-      laundry: [...getSelectedDays(SelectedDays.LAUNDRY)],
+
+    await update(rootRef, {
+      [`${Firebase.SCHEDULE}/${name}`]: {
+        work: [...selectedWorkDays],
+        laundry: [...getSelectedDays(SelectedDays.LAUNDRY)],
+      },
+      [`${Firebase.STAFF}/${staffKey}/workDays/${weekKey}`]:
+        selectedWorkDays.size,
     });
   } catch (err) {
     alert('스케줄 제출 중 오류가 발생했습니다.');

@@ -211,16 +211,6 @@ footer {
   padding: 0 8px;
 }
 
-#submit-button-container {
-  justify-content: flex-end;
-  margin-top: 24px;
-}
-
-#schedule-display-section {
-  background-color: rgba(89, 71, 67, 0.9);
-  margin-top: 8px;
-}
-
 #day-form>div {
   display: flex;
   gap: 3vw;
@@ -236,4 +226,14 @@ footer {
   justify-content: space-between;
   align-items: center;
   margin-top: 16px;
+}
+
+#submit-button-container {
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+#schedule-display-section {
+  background-color: rgba(89, 71, 67, 0.9);
+  margin-top: 8px;
 }

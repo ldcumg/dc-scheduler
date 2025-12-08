@@ -10,20 +10,21 @@ export const addNewbie = async (name: string) =>
   await set(push(staffRef()), { name });
 
 /** staff 이름 변경 */
-export const changeStaffName = async (staffKey: string, newName: string) =>
-  await update(staffRef(staffKey), { name: newName });
-
-/** schedule 이름 변경 */
-export const changeScheduleName = async (
+export const changeStaffName = async (
+  staffKey: string,
   targetName: string,
   newName: string
 ) => {
   const scheduleData = getScheduleData();
-
-  if (Object.keys(scheduleData).includes(targetName)) {
-    await set(scheduleRef(newName), scheduleData[targetName]);
-    await remove(scheduleRef(targetName));
+  const updates: Record<string, unknown> = {
+    [`staff/${staffKey}/name`]: newName,
+  };
+  if (scheduleData[targetName]) {
+    updates[`schedule/${newName}`] = scheduleData[targetName];
+    updates[`schedule/${targetName}`] = null;
   }
+
+  await update(rootRef, updates);
 };
 
 /** staff 삭제 */

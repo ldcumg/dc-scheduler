@@ -15,7 +15,6 @@ import {
 } from '../store';
 import {
   addNewbie,
-  changeScheduleName,
   changeStaffName,
   removeStaff,
   submitSelectedDays,
@@ -122,8 +121,11 @@ export const delegateStaffEvents = (parentNode: HTMLElement) => {
     const newName = nameInput.value.trim();
     if (!newName) return;
 
-    await changeStaffName(editingTarget.dataset.staffKey, newName);
-    await changeScheduleName(editingTarget.textContent, newName);
+    await changeStaffName(
+      editingTarget.dataset.staffKey,
+      editingTarget.textContent,
+      newName
+    );
 
     editingTarget.textContent = newName;
     editingTarget.classList.remove('editing');

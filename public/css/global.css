@@ -60,8 +60,8 @@ section {
 }
 
 button,
-input[type="checkbox"],
-.checkbox-label {
+input[type="checkbox"]:enabled,
+label:has(input[type="checkbox"]:enabled) {
   cursor: pointer;
 }
 
